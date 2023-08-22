@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import './App.css';
 import UserChat from './components/userChat';
+import api from './api';
 
 function App() {
   const [button, setButton] = useState("Login");
@@ -11,7 +12,7 @@ function App() {
   const [username1,setusername1] = useState(null);
   const [password1,setpassword1] = useState(null);
   let username, password;
-
+  
   const registerButton = () => {
     if(matterBtn==="Register"){
       setButton("Register");
@@ -32,15 +33,13 @@ function App() {
       username = document.getElementById('username').value;
       password = document.getElementById('password').value;
       if (button === "Register") {
-        const formData = new FormData();
-        formData.append('username', username);
-        formData.append('password', password);
+       
 
-        const response = await fetch(`https://chatapplicationbackend-production.up.railway.app/user/register`, {
-          method: 'POST',
-          body: formData,
+        const response = await api.post(`/user/register`, {
+          username:username,
+          password:password
         });
-        const responseData = await response.json();
+        const responseData = await response.data;
         if(responseData.message === "This user is in DataBase"){
           document.getElementById('msg').innerHTML = "We have an account with this Username if it was yours then try login.";
         }
@@ -55,8 +54,8 @@ function App() {
 
       }
       else if (button === "Login") {
-        const response = await fetch(`https://chatapplicationbackend-production.up.railway.app/user/login/${username}/${password}`);
-        const responseData = await response.json(); // Extract JSON data from response
+        const response = await api.get(`/user/login/${username}/${password}`);
+        const responseData = await response.data; // Extract JSON data from response
         console.log(responseData); // Log the response data
       
         if (responseData.message === "This user is in DataBase") {

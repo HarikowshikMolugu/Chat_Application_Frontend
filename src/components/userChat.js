@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './chat.css';
 import {Routes,Route} from 'react-router-dom'
-import NewChat from './NewChat';
-import YourProfile from './Yourprofile';
+import api from '../api';
 import menu from '../menu.png';
+import chatpic from "./chat.png";
 function UserChat(props) {
 
   const [username1, setUsername1] = useState(props.username);
@@ -19,6 +19,7 @@ function UserChat(props) {
   const [showProfile,setshowProfile] =useState(true);
   const [searchData,setsearchData] = useState([]);
   const [searchFilter, setSearchFilter] = useState("");
+  const encrypttxt = "(end-to-end encrypted)";
 
   useEffect(() => {
     getChatList();
@@ -49,8 +50,8 @@ function UserChat(props) {
 
   const getChatList = async () => {
     try {
-      const response = await fetch(`https://chatapplicationbackend-production.up.railway.app/chat/getChatList/${props.userId}`);
-      const responseData = await response.json();
+      const response = await api.get(`/chat/getChatList/${props.userId}`);
+      const responseData = await response.data;
       setChatList(responseData.chattedUserData);
     } catch (error) {
       console.log("Error in getting the Chatlist:", error);
@@ -73,8 +74,8 @@ function UserChat(props) {
     try {
       setStoredChattedUserId(chattedUserId);
 
-      const response = await fetch(`https://chatapplicationbackend-production.up.railway.app/chat/getChat/${props.userId}/${chattedUserId}`);
-      const responseData = await response.json();
+      const response = await api.get(`/chat/getChat/${props.userId}/${chattedUserId}`);
+      const responseData = await response.data;
       setShowChat(true);
       setPersonalChat(responseData.combinedList);
       setSelectedChatId(chattedUserId); // Set selected chat ID
@@ -84,20 +85,25 @@ function UserChat(props) {
   }
 
   const addChat = async (chattedUserId) => {
+    const message = document.getElementById('message').value;
+    if(message!==''){
+
+    
     try {
-      const message = document.getElementById('message').value;
+      
+      
       const formData = new FormData();
       formData.append('message', message);
 
-      const response = await fetch(`https://chatapplicationbackend-production.up.railway.app/chat/addChat/${props.userId}/${chattedUserId}`, {
-        method: 'POST',
-        body: formData,
+      const response = await api.post(`/chat/addChat/${props.userId}/${chattedUserId}`, {
+        message:message
       });
       document.getElementById('message').value = '';
       openChat(chattedUserId);
     } catch (error) {
       console.log("Error in sending message", error);
     }
+  }
   }
   const handleUsernameChange = (event) => {
     setUsername1(event.target.value);
@@ -133,15 +139,13 @@ function UserChat(props) {
       const usernameValue = username1;
       const passwordValue = password1;
       
-      const formData = new FormData();
-      formData.append('username', usernameValue);
-      formData.append('password', passwordValue);
+      
   
-      const response = await fetch(`https://chatapplicationbackend-production.up.railway.app/user/updateuserDetails/${props.userId}`, {
-        method: 'POST',
-        body: formData,
+      const response = await api.post(`/user/updateuserDetails/${props.userId}`, {
+        username:usernameValue,
+        password:passwordValue
       });
-      const responseData = await response.json();
+      const responseData = await response.data;
       if (responseData.message === "This user is in DataBase") {
         document.getElementById('usernameMsg').innerHTML = "Username Exits!!";
       }
@@ -163,8 +167,8 @@ function UserChat(props) {
       console.log(searchUsername);
       if (searchUsername !== null && searchUsername !== '') {
         try {
-          const response = await fetch(`https://chatapplicationbackend-production.up.railway.app/chat/search/${searchUsername}`);
-          const responseData = await response.json();
+          const response = await api.get(`/chat/search/${searchUsername}`);
+          const responseData = await response.data;
           setsearchData(responseData);
         } catch (error) {
           console.log(error);
@@ -186,7 +190,8 @@ function UserChat(props) {
       <div className='chatList'>
         <div className='header'>
           <div className='headerTitle'>
-          <p className='title1'>Chat Application</p>
+          <p className='title1'><span><img id='titlepic' src={chatpic}></img></span>InfiniTalk</p>
+          <p  className="encrypt" >{encrypttxt}</p>
           </div>
           <div className='dropdown'>
             <p className='dropbtn'><img id='menu' src={menu}/></p>
@@ -260,7 +265,7 @@ function UserChat(props) {
                     <p style={{color:'white',fontSize:'15px'}}>{list.username}</p>
                   )}
                  
-                   <button onClick={()=>openChatBox(list.id,list.username)} id='chatBtn'>Chat</button>
+                   <button onClick={()=>openChatBox(list.id,list.username)} id='chatBtn'><img style={{marginRight:'0'}} id='titlepic' src={chatpic}></img></button>
                 </div>
                 </div>
                 </>
@@ -280,6 +285,7 @@ function UserChat(props) {
               <p>{storedchattedusername}</p>
             </div>
             <div className='messageBox'>
+             
             <div className='messageContainer' id='messageContainer' ref={messageContainerRef}>
   {personalChat.map((list, index) => {
     const currentDate = list.createdat.split(' ')[0].split('-').join('/');
