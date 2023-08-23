@@ -32,9 +32,10 @@ function App() {
     try {
       username = document.getElementById('username').value;
       password = document.getElementById('password').value;
+      if(username!==''&&password!==''){
       if (button === "Register") {
        
-
+      
         const response = await api.post(`/user/register`, {
           username:username,
           password:password
@@ -51,9 +52,11 @@ function App() {
           setShowUserTodo(true);
           
         }
+      }
 
       }
       else if (button === "Login") {
+      
         const response = await api.get(`/user/login/${username}/${password}`);
         const responseData = await response.data; // Extract JSON data from response
         console.log(responseData); // Log the response data
@@ -68,12 +71,15 @@ function App() {
           setShowUserTodo(false);
           document.getElementById('msg').innerHTML = "No account is registered with the username and password you entered!!!";
         }
+      
+      }else{
+        document.getElementById('msg').innerHTML = "Username and password won't be empty";
       }
-      } catch (error) {
+    }catch (error) {
       console.log(error);
       }
-      };
       
+    }
 
   return (
     <div className='total'>
