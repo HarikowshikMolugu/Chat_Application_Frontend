@@ -484,3 +484,8 @@
   border-radius: 10px;
   padding: 7px 15px 5px 15px;
 }
+#lastmsg{
+  font-weight: 300;
+  font-size: 12px;
+  margin-top: 5px;
+}

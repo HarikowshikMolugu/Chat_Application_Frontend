@@ -32,7 +32,7 @@ function App() {
     username = document.getElementById('username').value;
       password = document.getElementById('password').value;
       if(username!==''&&password!==''){
-
+      if(username.length<16){
      
     try {
       
@@ -80,6 +80,9 @@ function App() {
     }}catch (error) {
       console.log(error);
       }
+    }else{
+      document.getElementById('msg').innerHTML = "Username must be less than 15 characters!!";
+    }
     }else{
       document.getElementById('msg').innerHTML = "Username and password should not be empty!!";
     }

@@ -214,9 +214,19 @@ function UserChat(props) {
               <div className='circle'></div>
             </div>
             <div className='userInfo'>
-              <p>{list.username}</p>
-              <p id='lastMsg'>{list.latestMessage}</p>
-            </div>
+             {list.username.length <= 15 ? (
+             <p>{list.username}</p>
+             ) : (
+            <p>{list.username.slice(0, 15)}...</p>
+            )}
+            {list.latestMessage.length <= 25 ? (
+             <p id='lastmsg'>{list.latestMessage}</p>
+             ) : (
+            <p id='lastmsg'>{list.latestMessage.slice(0, 25)}...</p>
+            )}
+          
+           </div>
+
             <div><p id='date'>{list.latestMessageCreatedAt.split(' ')[0].split('-').join('/')}</p></div>
             </div>
           ))
@@ -259,15 +269,18 @@ function UserChat(props) {
                   <div className='circle'></div>
                   </div>
               
-                <div className='userInfo' style={{flexDirection:'row',justifyContent:'space-between',paddingLeft:'0px'}}>
-                  {list.id===props.userId?(
-                    <p style={{color:'white',fontSize:'15px'}}>{list.username}(You)</p>
-                  ):(
-                    <p style={{color:'white',fontSize:'15px'}}>{list.username}</p>
-                  )}
-                 
-                   <button onClick={()=>openChatBox(list.id,list.username)} id='chatBtn'><img style={{marginRight:'0'}} id='titlepic' src={chatpic}></img></button>
-                </div>
+                  <div className='userInfo' style={{ flexDirection: 'row', justifyContent: 'space-between', paddingLeft: '0px' }}>
+  {list.id === props.userId ? (
+    <p style={{ color: 'white', fontSize: '15px' }}>{list.username.length <= 17 ? list.username : `${list.username.slice(0, 17)}...`} (You)</p>
+  ) : (
+    <p style={{ color: 'white', fontSize: '15px' }}>{list.username.length <= 17 ? list.username : `${list.username.slice(0, 17)}...`}</p>
+  )}
+
+  <button onClick={() => openChatBox(list.id, list.username)} id='chatBtn'>
+    <img style={{ marginRight: '0' }} id='titlepic' src={chatpic} alt='Chat Icon' />
+  </button>
+</div>
+
                 </div>
                 </>
                 ))}
