@@ -29,10 +29,14 @@ function App() {
   }
 
   const buttonOperation = async () => {
-    try {
-      username = document.getElementById('username').value;
+    username = document.getElementById('username').value;
       password = document.getElementById('password').value;
       if(username!==''&&password!==''){
+
+     
+    try {
+      
+     
       if (button === "Register") {
        
       
@@ -54,7 +58,7 @@ function App() {
         }
       }
 
-      }
+      
       else if (button === "Login") {
       
         const response = await api.get(`/user/login/${username}/${password}`);
@@ -72,13 +76,13 @@ function App() {
           document.getElementById('msg').innerHTML = "No account is registered with the username and password you entered!!!";
         }
       
-      }else{
-        document.getElementById('msg').innerHTML = "Username and password won't be empty";
-      }
-    }catch (error) {
+      
+    }}catch (error) {
       console.log(error);
       }
-      
+    }else{
+      document.getElementById('msg').innerHTML = "Username and password should not be empty!!";
+    }
     }
 
   return (

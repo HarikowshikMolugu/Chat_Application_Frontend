@@ -114,6 +114,7 @@ function UserChat(props) {
   };
 
   const newChat = async()=>{
+    setsearchData([]);
      setshowChatList(false);
      setshowProfile(false);
      
