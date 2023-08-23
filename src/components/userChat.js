@@ -4,6 +4,8 @@ import {Routes,Route} from 'react-router-dom'
 import api from '../api';
 import menu from '../menu.png';
 import chatpic from "./chat.png";
+import unseen from './unsee_tick.png'
+import seen from './seen_tick.png'
 function UserChat(props) {
 
   const [username1, setUsername1] = useState(props.username);
@@ -52,7 +54,7 @@ function UserChat(props) {
     try {
       const response = await api.get(`/chat/getChatList/${props.userId}`);
       const responseData = await response.data;
-      setChatList(responseData.chattedUserData);
+      setChatList(responseData.data);
     } catch (error) {
       console.log("Error in getting the Chatlist:", error);
     }
@@ -60,8 +62,17 @@ function UserChat(props) {
 
   const openChatBox = async (chattedUserId, username) => {
     setStoredChattedUsername(username);
+    updateMessages(chattedUserId);
     openChat(chattedUserId);
     scrollToBottom();
+  }
+
+  const updateMessages = async (chattedUserId)=>{
+    try{
+    await api.post(`/chat/update/messageSeen/${chattedUserId}/${props.userId}`)
+    }catch(error){
+      console.log("Error in updating unseen to seen",error);
+    }
   }
 
   const scrollToBottom = () => {
@@ -219,15 +230,72 @@ function UserChat(props) {
              ) : (
             <p>{list.username.slice(0, 15)}...</p>
             )}
-            {list.latestMessage.length <= 25 ? (
-             <p id='lastmsg'>{list.latestMessage}</p>
+            {list.side==='right'?(
+              <>
+              {list.status==="Seen"?(
+                <>
+                {list.message.length <= 25 ? (
+                  <div style={{display:'flex',flexDirection:'row',marginLeft:'10px',justifyContent:'normal',marginTop:'5px'}}>
+             <img id='tickimg'   src={seen} alt='Seen'></img>
+             <p id='lastmsg' style={{paddingLeft:'0px'}}>{list.message}</p>
+             </div>
              ) : (
-            <p id='lastmsg'>{list.latestMessage.slice(0, 25)}...</p>
+              <div style={{display:'flex',flexDirection:'row',marginLeft:'10px',justifyContent:'normal',marginTop:'5px'}}>
+             <img id='tickimg' src={seen} alt='Seen'></img>
+            <p id='lastmsg' style={{paddingLeft:'0px'}}>{list.message.slice(0, 25)}...</p>
+            </div>
+            )}
+                </>
+              ):(
+                <>
+                {list.message.length <= 25 ? (
+                  <div style={{display:'flex',flexDirection:'row',marginLeft:'10px',justifyContent:'normal',marginTop:'5px'}}>
+             <img id='tickimg' src={unseen} alt='Seen'></img>
+             <p id='lastmsg' style={{paddingLeft:'0px'}}>{list.message}</p>
+             </div>
+             ) : (
+              <div style={{display:'flex',flexDirection:'row',marginLeft:'10px',justifyContent:'normal',marginTop:'5px'}}>
+             <img id='tickimg' src={unseen} alt='Seen'></img>
+            <p id='lastmsg' style={{paddingLeft:'0px'}}>{list.message.slice(0, 25)}...</p>
+            </div>
+            )}
+                </>
+              )}
+              </>
+            ):(
+              <>
+              {list.status==="Seen"?(
+                <>
+                {list.message.length <= 25 ? (
+                  
+             <p id='lastmsg' style={{marginTop:'5px'}}>{list.message}</p>
+            
+             ) : (
+              
+            <p id='lastmsg' style={{marginTop:'5px'}}>{list.message.slice(0, 25)}...</p>
+           
+            )}
+                </>
+              ):(
+                <>
+                {list.message.length <= 25 ? (
+                  
+             <p id='lastmsg' style={{color:'#25d366',fontWeight:'700',marginTop:'5px'}}>{list.message}</p>
+             
+             ) : (
+           
+             
+            <p id='lastmsg' style={{color:'#25d366',fontWeight:'700',marginTop:'5px'}}>{list.message.slice(0, 25)}...</p>
+            
+            )}
+                </>
+              )}
+              </>
             )}
           
            </div>
 
-            <div><p id='date'>{list.latestMessageCreatedAt.split(' ')[0].split('-').join('/')}</p></div>
+            <div><p id='date'>{list.createdat.split(' ')[0].split('-').join('/')}</p></div>
             </div>
           ))
         ) : (
@@ -270,16 +338,16 @@ function UserChat(props) {
                   </div>
               
                   <div className='userInfo' style={{ flexDirection: 'row', justifyContent: 'space-between', paddingLeft: '0px' }}>
-  {list.id === props.userId ? (
-    <p style={{ color: 'white', fontSize: '15px' }}>{list.username.length <= 17 ? list.username : `${list.username.slice(0, 17)}...`} (You)</p>
-  ) : (
-    <p style={{ color: 'white', fontSize: '15px' }}>{list.username.length <= 17 ? list.username : `${list.username.slice(0, 17)}...`}</p>
-  )}
+                  {list.id === props.userId ? (
+                    <p style={{ color: 'white', fontSize: '15px' }}>{list.username.length <= 17 ? list.username : `${list.username.slice(0, 17)}...`} (You)</p>
+                  ) : (
+                    <p style={{ color: 'white', fontSize: '15px' }}>{list.username.length <= 17 ? list.username : `${list.username.slice(0, 17)}...`}</p>
+                  )}
 
-  <button onClick={() => openChatBox(list.id, list.username)} id='chatBtn'>
-    <img style={{ marginRight: '0' }} id='titlepic' src={chatpic} alt='Chat Icon' />
-  </button>
-</div>
+                  <button onClick={() => openChatBox(list.id, list.username)} id='chatBtn'>
+                    <img style={{ marginRight: '0' }} id='titlepic' src={chatpic} alt='Chat Icon' />
+                  </button>
+                </div>
 
                 </div>
                 </>
@@ -322,7 +390,18 @@ function UserChat(props) {
           )}
           <div className={`message ${list.side === 'left' ? 'left' : 'right'}`}>
             <p style={{ fontWeight: '700' }}>{list.message}</p>
+            <div style={{display:'flex',flexDirection:'column',justifyContent:'space-between'}}>
             <p id='time'>{list.createdat.split(' ')[1].substr(0, 5)}</p>
+            {list.side==="right"&&(
+              <>
+            {list.status==="Unseen"?(
+            <img id='tickimg' src={unseen} alt='Unseen'></img>
+            ):(
+              <img id='tickimg' src={seen} alt='Seen'></img>
+            )}
+            </>
+          )}
+            </div>
           </div>
         </div>
       );
