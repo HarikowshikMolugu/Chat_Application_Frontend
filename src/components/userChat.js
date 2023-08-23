@@ -50,6 +50,22 @@ function UserChat(props) {
     }
   }, [showChat, storedchattedUserid]);
 
+  useEffect(() => {
+    if (showChat) {
+      // Call updateMessages when showChat is true
+      updateMessages(storedchattedUserid);
+
+      const interval = setInterval(() => {
+        getChatList();
+        updateMessages(storedchattedUserid); // Also update periodically
+      }, 1000);
+
+      return () => {
+        clearInterval(interval);
+      };
+    }
+  }, [showChat, storedchattedUserid]);
+
   const getChatList = async () => {
     try {
       const response = await api.get(`/chat/getChatList/${props.userId}`);
@@ -66,20 +82,27 @@ function UserChat(props) {
     openChat(chattedUserId);
     scrollToBottom();
   }
-
-  const updateMessages = async (chattedUserId)=>{
-    try{
-    await api.post(`/chat/update/messageSeen/${chattedUserId}/${props.userId}`)
-    }catch(error){
-      console.log("Error in updating unseen to seen",error);
+  
+    const updateMessages = async (chattedUserId)=>{
+      try{
+      await api.post(`/chat/update/messageSeen/${chattedUserId}/${props.userId}`)
+      }catch(error){
+        console.log("Error in updating unseen to seen",error);
+      }
     }
-  }
+  
+  
 
+  useEffect(() => {
+    scrollToBottom();
+  }, [personalChat]);
+  
   const scrollToBottom = () => {
     if (messageContainerRef.current) {
       messageContainerRef.current.scrollTop = messageContainerRef.current.scrollHeight;
     }
   };
+  
 
   const openChat = async (chattedUserId) => {
     try {
@@ -97,25 +120,25 @@ function UserChat(props) {
 
   const addChat = async (chattedUserId) => {
     const message = document.getElementById('message').value;
-    if(message!==''){
-
-    
-    try {
-      
-      
-      const formData = new FormData();
-      formData.append('message', message);
-
-      const response = await api.post(`/chat/addChat/${props.userId}/${chattedUserId}`, {
-        message:message
-      });
-      document.getElementById('message').value = '';
-      openChat(chattedUserId);
-    } catch (error) {
-      console.log("Error in sending message", error);
+  
+    if (message !== '') {
+      try {
+        const formData = new FormData();
+        formData.append('message', message);
+  
+        await api.post(`/chat/addChat/${props.userId}/${chattedUserId}`, {
+          message: message,
+        });
+  
+        document.getElementById('message').value = '';
+        openChat(chattedUserId);
+        scrollToBottom(); // Scroll to the bottom after adding a new message
+      } catch (error) {
+        console.log('Error in sending message', error);
+      }
     }
-  }
-  }
+  };
+  
   const handleUsernameChange = (event) => {
     setUsername1(event.target.value);
   };
