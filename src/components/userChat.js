@@ -4,8 +4,10 @@ import {Routes,Route} from 'react-router-dom'
 import api from '../api';
 import menu from '../menu.png';
 import chatpic from "./chat.png";
-import unseen from './unsee_tick.png'
-import seen from './seen_tick.png'
+import unseen from './unsee_tick.png';
+import seen from './seen_tick.png';
+import eyeopen from './eyeopen.png';
+import eyeclose  from './eyeclose.png';
 function UserChat(props) {
 
   const [username1, setUsername1] = useState(props.username);
@@ -22,6 +24,8 @@ function UserChat(props) {
   const [searchData,setsearchData] = useState([]);
   const [searchFilter, setSearchFilter] = useState("");
   const encrypttxt = "(end-to-end encrypted)";
+  const [passType, setpassType] = useState("password");
+  const [eyeType,seteyeType] = useState(eyeclose);
 
   useEffect(() => {
     getChatList();
@@ -159,6 +163,15 @@ function UserChat(props) {
     setshowProfile(true);
     setsearchData([]);
    
+  }
+  const showPassword = async()=>{
+    if(eyeType===eyeclose){
+      seteyeType(eyeopen);
+      setpassType('text');
+    }else{
+      seteyeType(eyeclose);
+      setpassType('password');
+    }
   }
   const Back = async()=>{
     setshowChatList(true);
@@ -334,7 +347,12 @@ function UserChat(props) {
               </div>
               <p><b>Your Username: </b><input type='text' id='username12' value={username1} onChange={handleUsernameChange} /></p>
               <p id='usernameMsg' style={{ color: 'red', fontSize: '13px' }}></p>
-              <p><b>Your Password: </b><input type='text' id='password12' value={password1} onChange={handlePasswordChange} /></p>
+              <p><b>Your Password: </b>
+              <div style={{display:'flex',flexDirection:'row'}}>
+              <input type={passType} id='password12' value={password1} onChange={handlePasswordChange} />
+              <img src={eyeType} style={{height:'20px',width:'20px',cursor:'pointer',marginTop:'10px'}} onClick={showPassword} alt='eye'></img>
+              </div>
+              </p>
        
              <p id='sucessMsg' style={{ color: 'red', fontSize: '13px' }}></p>
               <div id='saveDiv'>

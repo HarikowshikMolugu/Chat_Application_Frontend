@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import './App.css';
 import UserChat from './components/userChat';
 import api from './api';
+import eyeopen from './components/eyeopen.png';
+import eyeclose from './components/eyeclose.png'; 
 
 function App() {
   const [button, setButton] = useState("Login");
@@ -11,6 +13,8 @@ function App() {
   const [matterBtn, setmatterBtn] = useState("Register");
   const [username1,setusername1] = useState(null);
   const [password1,setpassword1] = useState(null);
+  const [passType, setpassType] = useState("password");
+  const [eyeType,seteyeType] = useState(eyeclose);
   let username, password;
   
   const registerButton = () => {
@@ -88,6 +92,16 @@ function App() {
     }
     }
 
+    const showPassword = async()=>{
+      if(eyeType===eyeclose){
+        seteyeType(eyeopen);
+        setpassType('text');
+      }else{
+        seteyeType(eyeclose);
+        setpassType('password');
+      }
+    }
+
   return (
     <div className='total'>
       {showUserTodo ? (
@@ -95,10 +109,14 @@ function App() {
       ) : (
         <div className='App'>
           <div className='auth'>
+            <p style={{color:'#128c7e',fontWeight:'700',fontSize:'25px'}}>{button}</p><br></br>
           <label>Username</label><br />
           <input type='text' id='username'/><br />
           <label>Password</label><br />
-          <input type='password' id='password' /><br />
+          <div style={{display:'flex',flexDirection:'row'}}>
+          <input type={passType} id='password' /><br />
+          <img src={eyeType} style={{height:'20px',width:'20px',cursor:'pointer',marginTop:'10px'}} onClick={showPassword} alt='eye'></img>
+          </div>
           <button onClick={buttonOperation}>
             {button}
           </button>
