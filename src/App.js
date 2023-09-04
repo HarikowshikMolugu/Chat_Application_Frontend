@@ -113,9 +113,9 @@ function App() {
           <label>Username</label><br />
           <input type='text' id='username'/><br />
           <label>Password</label><br />
-          <div style={{display:'flex',flexDirection:'row'}}>
+          <div style={{display:'flex',flexDirection:'row',position:'relative'}}>
           <input type={passType} id='password' /><br />
-          <img src={eyeType} style={{height:'20px',width:'20px',cursor:'pointer',marginTop:'10px'}} onClick={showPassword} alt='eye'></img>
+          <img src={eyeType} style={{height:'20px',width:'20px',cursor:'pointer',marginTop:'10px',position:'absolute',right:'0',marginRight:'5px'}} onClick={showPassword} alt='eye'></img>
           </div>
           <button onClick={buttonOperation}>
             {button}

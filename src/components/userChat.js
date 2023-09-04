@@ -348,9 +348,9 @@ function UserChat(props) {
               <p><b>Your Username: </b><input type='text' id='username12' value={username1} onChange={handleUsernameChange} /></p>
               <p id='usernameMsg' style={{ color: 'red', fontSize: '13px' }}></p>
               <p><b>Your Password: </b>
-              <div style={{display:'flex',flexDirection:'row'}}>
+              <div style={{display:'flex',flexDirection:'row',position:'relative'}}>
               <input type={passType} id='password12' value={password1} onChange={handlePasswordChange} />
-              <img src={eyeType} style={{height:'20px',width:'20px',cursor:'pointer',marginTop:'10px'}} onClick={showPassword} alt='eye'></img>
+              <img src={eyeType} style={{height:'20px',width:'20px',cursor:'pointer',marginTop:'10px',position:'absolute',marginRight:'5px'}} onClick={showPassword} alt='eye'></img>
               </div>
               </p>
        
