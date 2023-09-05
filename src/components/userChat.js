@@ -8,6 +8,7 @@ import unseen from './unsee_tick.png';
 import seen from './seen_tick.png';
 import eyeopen from './eyeopen.png';
 import eyeclose  from './eyeclose.png';
+import back from './back.png';
 function UserChat(props) {
 
   const [username1, setUsername1] = useState(props.username);
@@ -79,8 +80,17 @@ function UserChat(props) {
       console.log("Error in getting the Chatlist:", error);
     }
   }
+  
+  const chatHistoryDisplayPHMode  = (show)=>{
+    if (show === "true"){
+      document.getElementById('chatHistory').style.position="absolute";
+    }else{
+      document.getElementById('chatHistory').style.position="";
+    }
+  }
 
   const openChatBox = async (chattedUserId, username) => {
+    chatHistoryDisplayPHMode("true");
     setStoredChattedUsername(username);
     updateMessages(chattedUserId);
     openChat(chattedUserId);
@@ -231,7 +241,9 @@ function UserChat(props) {
   }, [searchFilter]);
   
   
-
+  const backimgFun = () => {
+    chatHistoryDisplayPHMode("false");
+  }
 
   return (
     <div className='chatTotal'>
@@ -350,7 +362,7 @@ function UserChat(props) {
               <p><b>Your Password: </b>
               <div style={{display:'flex',flexDirection:'row',position:'relative'}}>
               <input type={passType} id='password12' value={password1} onChange={handlePasswordChange} />
-              <img src={eyeType} style={{height:'20px',width:'20px',cursor:'pointer',marginTop:'10px',position:'absolute',marginRight:'5px'}} onClick={showPassword} alt='eye'></img>
+              <img src={eyeType} style={{height:'20px',width:'20px',cursor:'pointer',marginTop:'10px',position:'absolute',marginRight:'5px',right:'0'}} onClick={showPassword} alt='eye'></img>
               </div>
               </p>
        
@@ -401,11 +413,17 @@ function UserChat(props) {
           )
         )}
       </div>
-      <div className='chatHistory'>
+      <div className='chatHistory' id='chatHistory'>
         {showChat && (
           <>
             <div className='chatHistoryTitle'>
+              <div id='backimagDiv'>
+              <img  id="backimg"  src={back} onClick={backimgFun}></img>
+              </div>
+              <div id='chatHistoryUsername'>
               <p>{storedchattedusername}</p>
+              </div>
+              
             </div>
             <div className='messageBox'>
              
