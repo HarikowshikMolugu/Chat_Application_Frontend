@@ -547,6 +547,9 @@
   height: 20px;
   width: 20px;
 }
+.inputContainer{
+  position: inherit;
+}
 .chatHistoryTitle p {
   font-size: 18px;
 }
