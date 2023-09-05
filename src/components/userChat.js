@@ -9,6 +9,7 @@ import seen from './seen_tick.png';
 import eyeopen from './eyeopen.png';
 import eyeclose  from './eyeclose.png';
 import back from './back.png';
+import send from './send.png';
 function UserChat(props) {
 
   const [username1, setUsername1] = useState(props.username);
@@ -81,16 +82,10 @@ function UserChat(props) {
     }
   }
   
-  const chatHistoryDisplayPHMode  = (show)=>{
-    if (show === "true"){
-      document.getElementById('chatHistory').style.position="absolute";
-    }else{
-      document.getElementById('chatHistory').style.position="";
-    }
-  }
+ 
 
   const openChatBox = async (chattedUserId, username) => {
-    chatHistoryDisplayPHMode("true");
+    document.getElementById('chatHistory').setAttribute('data-show', 'true');
     setStoredChattedUsername(username);
     updateMessages(chattedUserId);
     openChat(chattedUserId);
@@ -242,7 +237,7 @@ function UserChat(props) {
   
   
   const backimgFun = () => {
-    chatHistoryDisplayPHMode("false");
+    document.getElementById('chatHistory').setAttribute('data-show', 'false');
   }
 
   return (
@@ -413,7 +408,7 @@ function UserChat(props) {
           )
         )}
       </div>
-      <div className='chatHistory' id='chatHistory'>
+      <div className='chatHistory' id='chatHistory' data-show="false">
         {showChat && (
           <>
             <div className='chatHistoryTitle'>
@@ -469,7 +464,7 @@ function UserChat(props) {
               </div>
               <div className='inputContainer'>
                 <input type='textarea' placeholder='Type message' id='message' />
-                <button onClick={() => addChat(storedchattedUserid)}>Send</button>
+                <button onClick={() => addChat(storedchattedUserid)}><img style={{height:'15px',width:'15px'}} src={send}></img></button>
               </div>
             </div>
           </>

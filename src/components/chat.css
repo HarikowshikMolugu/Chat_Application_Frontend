@@ -526,6 +526,9 @@
   margin-left :0;
   
 }
+#chatHistory[data-show="true"] {
+  position: absolute;
+}
 #chatHistoryUsername{
   width: 70%;
 
@@ -546,5 +549,8 @@
 }
 .chatHistoryTitle p {
   font-size: 18px;
+}
+.inputContainer input {
+  width: 75%;
 }
 }
